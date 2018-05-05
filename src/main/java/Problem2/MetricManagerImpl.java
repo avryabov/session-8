@@ -18,22 +18,20 @@ public class MetricManagerImpl implements MetricManager {
     }
 
     @Override
-    public Event addEvent(Event event) {
-        LinkedBlockingQueue queue = eventStore.putIfAbsent(event.getType(), new LinkedBlockingQueue(Arrays.asList(Double.valueOf(event.getValue()))));
-        if (queue == null)
-            return null;
-        eventStore.compute(event.getType(), new BiFunction<String, LinkedBlockingQueue, LinkedBlockingQueue>() {
-            @Override
-            public LinkedBlockingQueue apply(String s, LinkedBlockingQueue linkedBlockingQueue) {
-                try {
-                    linkedBlockingQueue.put(event.getValue());
-                } catch (InterruptedException e) {
-                    new RuntimeException(e);
+    public void addEvent(Event event) {
+        if (eventStore.putIfAbsent(event.getType(), new LinkedBlockingQueue(Arrays.asList(Double.valueOf(event.getValue())))) != null) {
+            eventStore.compute(event.getType(), new BiFunction<String, LinkedBlockingQueue, LinkedBlockingQueue>() {
+                @Override
+                public LinkedBlockingQueue apply(String s, LinkedBlockingQueue linkedBlockingQueue) {
+                    try {
+                        linkedBlockingQueue.put(event.getValue());
+                    } catch (InterruptedException e) {
+                        new RuntimeException(e);
+                    }
+                    return linkedBlockingQueue;
                 }
-                return linkedBlockingQueue;
-            }
-        });
-        return event;
+            });
+        }
     }
 
     @Override
