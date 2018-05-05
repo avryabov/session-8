@@ -31,9 +31,11 @@ public class UnblockingConcurrentStack<E> {
     }
 
     public E peek() {
-        if(top.get() == null)
+        Node<E> node = top.get();
+        if(node == null)
             return null;
-        return top.get().item;
+        else
+            return node.item;
     }
 
     public boolean empty() {
