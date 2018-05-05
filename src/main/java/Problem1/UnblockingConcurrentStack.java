@@ -22,6 +22,8 @@ public class UnblockingConcurrentStack<E> {
     public E pop() {
         while(true) {
             Node<E> oldTop = top.get();
+            if(oldTop == null)
+                return null;
             Node<E> newTop = oldTop.next;
             if(top.compareAndSet(oldTop, newTop))
                 return oldTop.item;
@@ -29,6 +31,8 @@ public class UnblockingConcurrentStack<E> {
     }
 
     public E peek() {
+        if(top.get() == null)
+            return null;
         return top.get().item;
     }
 
