@@ -34,8 +34,7 @@ public class UnblockingConcurrentStack<E> {
         Node<E> node = top.get();
         if(node == null)
             return null;
-        else
-            return node.item;
+        return node.item;
     }
 
     public boolean empty() {
