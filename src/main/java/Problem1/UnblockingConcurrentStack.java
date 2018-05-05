@@ -38,10 +38,7 @@ public class UnblockingConcurrentStack<E> {
     }
 
     public boolean empty() {
-        if(top.get() == null)
-            return true;
-        else
-            return false;
+        return top.get() == null;
     }
 
     public int search(E o) {
